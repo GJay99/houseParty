@@ -9,10 +9,13 @@ import { Link } from "react-router-dom";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { cardActionAreaClasses } from "@mui/material/CardActionArea";
+import { useNavigate } from 'react-router-dom';
 
-export default class CreateRoomPage extends Component {
+class CreateRoomPage extends Component {
   defaultVotes = 2;
   
+
   constructor(props){
     super(props);
     this.state = {
@@ -35,7 +38,7 @@ export default class CreateRoomPage extends Component {
       guestCanPause: e.target.value === "true" ? true : false,
     })
   }
-
+  
   handleRoomButtonPressed(){
     const requestOptions = {
       method: 'POST',
@@ -45,9 +48,10 @@ export default class CreateRoomPage extends Component {
         guest_can_pause: this.state.guestCanPause
       })
     };
-    fetch('/api/create-room', requestOptions).then((response)=>response.json()).then((data)=> console.log(data));
-  }
+    fetch('/api/create-room', requestOptions).then((response)=>response.json()).then((data)=>{this.props.navigate("/room/"+data.code)});
+}
 
+  
   render() {
     return(
       <Grid container spacing={1}>
@@ -104,4 +108,9 @@ export default class CreateRoomPage extends Component {
       </Grid>
     );
   }
+}
+
+export default function CreateRoomPageWrapper(props){
+  const navigate = useNavigate();
+  return <CreateRoomPage {...props} navigate={navigate}/>
 }
